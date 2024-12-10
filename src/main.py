@@ -1,5 +1,6 @@
 import psycopg2
-from utils import print_menu
+from utils import print_menu, get_db_data
+from data_classes import Customer, Seller, Product, Order, ProductReview
 
 # These are used to connect to the databases
 CONN_STR_DB1 = "postgresql://postgres:password@127.0.0.1:8432/postgres"
@@ -111,7 +112,10 @@ def find_cheapest_product() -> None:
 
 def main() -> None:
     # Main loop to display the menu and process user's choice
+    # get all data from all databases to objects
+    customers, sellers, products, orders, product_review = get_db_data([CONN_STR_DB1, CONN_STR_DB2, CONN_STR_DB3])
     while True:
+
         choice = print_menu()
         match choice:
             case 0:
