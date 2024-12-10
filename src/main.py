@@ -1,4 +1,5 @@
 import psycopg2
+from utils import print_menu
 
 # These are used to connect to the databases
 CONN_STR_DB1 = "postgresql://postgres:password@127.0.0.1:8432/postgres"
@@ -69,57 +70,63 @@ def get_cheapest_product(conn_str: str) -> dict:
         print(f"Error: {e}")
         return None
 
-def main() -> None:
-    # Display the menu options
-    print("Select an option:")
-    print("1. Display all records from all tables in all databases.")
-    print("2. Find the cheapest product across all databases.")
+def display_all_records() -> None:
+    print("Displaying all records from DB1:")
+    get_all_records(CONN_STR_DB1)
+    print("\nDisplaying all records from DB2:")
+    get_all_records(CONN_STR_DB2)
+    print("\nDisplaying all records from DB3:")
+    get_all_records(CONN_STR_DB3)
 
-    # Get the user's choice
-    choice = input("Enter your choice (1 or 2): ")
+def find_cheapest_product() -> None:
+    # Option 2: Find the cheapest product across all databases
+    # Get the cheapest product from each database
+    cheapest_db1 = get_cheapest_product(CONN_STR_DB1)
+    cheapest_db2 = get_cheapest_product(CONN_STR_DB2)
+    cheapest_db3 = get_cheapest_product(CONN_STR_DB3)
 
-    if choice == '1':
-        # Option 1: Display all records from all tables in all databases
-        print("Displaying all records from DB1:")
-        get_all_records(CONN_STR_DB1)
-        print("\nDisplaying all records from DB2:")
-        get_all_records(CONN_STR_DB2)
-        print("\nDisplaying all records from DB3:")
-        get_all_records(CONN_STR_DB3)
+    # Collect the products from all databases
+    all_products = []
+    if cheapest_db1:
+        all_products.append({'database': 'DB1', 'product': cheapest_db1})
+    if cheapest_db2:
+        all_products.append({'database': 'DB2', 'product': cheapest_db2})
+    if cheapest_db3:
+        all_products.append({'database': 'DB3', 'product': cheapest_db3})
 
-    elif choice == '2':
-        # Option 2: Find the cheapest product across all databases
-        # Get the cheapest product from each database
-        cheapest_db1 = get_cheapest_product(CONN_STR_DB1)
-        cheapest_db2 = get_cheapest_product(CONN_STR_DB2)
-        cheapest_db3 = get_cheapest_product(CONN_STR_DB3)
+    # Find the overall cheapest product
+    if all_products:
+        cheapest_product = min(all_products, key=lambda x: x['product']['price'])
 
-        # Collect the products from all databases
-        all_products = []
-        if cheapest_db1:
-            all_products.append({'database': 'DB1', 'product': cheapest_db1})
-        if cheapest_db2:
-            all_products.append({'database': 'DB2', 'product': cheapest_db2})
-        if cheapest_db3:
-            all_products.append({'database': 'DB3', 'product': cheapest_db3})
+        # Extract product info
+        db = cheapest_product['database']
+        product = cheapest_product['product']
 
-        # Find the overall cheapest product
-        if all_products:
-            cheapest_product = min(all_products, key=lambda x: x['product']['price'])
-
-            # Extract product info
-            db = cheapest_product['database']
-            product = cheapest_product['product']
-
-            # Print the result
-            print(f"Cheapest product across all databases:")
-            print(f"Database: {db}")
-            print(f"Product ID: {product['id']}, Name: {product['name']}, Price: {product['price']}")
-        else:
-            print("No products found in any database.")
-
+        # Print the result
+        print(f"Cheapest product across all databases:")
+        print(f"Database: {db}")
+        print(f"Product ID: {product['id']}, Name: {product['name']}, Price: {product['price']}")
     else:
-        print("Invalid choice. Please select 1 or 2.")
+        print("No products found in any database.")
+
+def main() -> None:
+    # Main loop to display the menu and process user's choice
+    while True:
+        choice = print_menu()
+        match choice:
+            case 0:
+                exit(0) 
+                exit_program() # TODO: implement exiting and saving everything
+
+            case 1:
+                display_all_records()
+            case 2:
+                find_cheapest_product()
+            case 3:
+                pass
+            case _:
+                print("Invalid choice.")
+                continue            
 
 if __name__ == "__main__":
     main()
