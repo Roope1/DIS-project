@@ -1,6 +1,6 @@
 import psycopg2
 from utils import print_menu, get_db_data
-from data_classes import Customer, Seller, Product, Order, ProductReview
+from data_classes import Customer, Seller, Product, Order, ProductReview, State
 
 # These are used to connect to the databases
 CONN_STR_DB1 = "postgresql://postgres:password@127.0.0.1:8432/postgres"
@@ -110,9 +110,28 @@ def find_cheapest_product() -> None:
     else:
         print("No products found in any database.")
 
+def get_products() -> None:
+    """
+    Allows user to select a database and displays all products from that database.
+    """
+    db_selection = input("Enter the database number (1, 2, or 3): ")
+    if db_selection not in ["1", "2", "3"]:
+        print("Invalid database number.")
+        return
+
+    prod = [x for x in products if x.origin == int(db_selection) - 1 and x.state != State.DELETED]
+    print("\n{:<30} | {:>10} | {:<30}".format("Product Name", "Price", "Seller Name"))
+    print("-" * 70)
+    for p in prod:
+        print(f"{p.name:<30} | {p.price:>9}€ | {p.seller.name:<30}")
+    
+
 def main() -> None:
-    # Main loop to display the menu and process user's choice
-    # get all data from all databases to objects
+     """
+     Main loop to display the menu and process user's choice
+     """
+     get all data from all databases to objects
+    global customers, sellers, products, orders, product_review
     customers, sellers, products, orders, product_review = get_db_data([CONN_STR_DB1, CONN_STR_DB2, CONN_STR_DB3])
     while True:
 
@@ -127,7 +146,7 @@ def main() -> None:
             case 2:
                 find_cheapest_product()
             case 3:
-                pass
+                get_products()
             case _:
                 print("Invalid choice.")
                 continue            
