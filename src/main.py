@@ -127,11 +127,11 @@ def get_products() -> None:
     
 
 def main() -> None:
-     """
-     Main loop to display the menu and process user's choice
-     """
-     get all data from all databases to objects
-    global customers, sellers, products, orders, product_review
+    """
+    Main loop to display the menu and process user's choice
+    """
+    # get all data from all databases to objects
+    global customers, sellers, products, orders, product_review # these are global for easier access
     customers, sellers, products, orders, product_review = get_db_data([CONN_STR_DB1, CONN_STR_DB2, CONN_STR_DB3])
     while True:
 
