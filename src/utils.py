@@ -66,7 +66,6 @@ def get_db_data(conn_strs: list[str]) -> tuple[list[Customer], list[Seller], lis
         # get all product reviews
         cur.execute("SELECT * FROM ProductReviews")
         res = cur.fetchall()
-        product_reviews = []
         for r in res:
             product_reviews.append(ProductReview(r[0], [p for p in products if p.id == r[1]][0], [c for c in customers if c.id == r[2]][0], r[3], origin))
         
