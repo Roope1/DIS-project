@@ -1,6 +1,7 @@
 import psycopg2
-from utils import print_menu, get_db_data
+from utils import print_menu, get_db_data, save_data
 from data_classes import Customer, Seller, Product, Order, ProductReview, State
+from searches import get_products, get_reviews_by_product
 
 # These are used to connect to the databases
 CONN_STR_DB1 = "postgresql://postgres:password@127.0.0.1:8432/postgres"
@@ -110,38 +111,6 @@ def find_cheapest_product() -> None:
     else:
         print("No products found in any database.")
 
-def get_products() -> None:
-    """
-    Allows user to select a database and displays all products from that database.
-    """
-    db_selection = input("Enter the database number (1, 2, or 3): ")
-    if db_selection not in ["1", "2", "3"]:
-        print("Invalid database number.")
-        return
-
-    prod = [x for x in products if x.origin == int(db_selection) - 1 and x.state != State.DELETED]
-    print("\n{:<30} | {:>10} | {:<30}".format("Product Name", "Price", "Seller Name"))
-    print("-" * 70)
-    for p in prod:
-        print(f"{p.name:<30} | {p.price:>9}€ | {p.seller.name:<30}")
-    
-def get_reviews_by_product() -> None:
-    """
-    Allows user to select a product by name and displays all reviews for that product.
-    """
-    db_selection = input("Enter database you want to search in (1, 2, or 3): ")
-    if db_selection not in ["1", "2", "3"]:
-        print("Invalid database number.")
-        return
-    
-    product_name = input("Enter the product name: ")
-    
-    prod = [x for x in product_review if x.origin == (int(db_selection) - 1) and x.state != State.DELETED and x.product.name.lower() == product_name.lower()]
-
-    print("\n{:<30} | {:<30} | {:<30}".format("Customer Name", "Product Name", "Review"))
-    print("-" * 90)
-    for p in prod:
-        print(f"{p.customer.name:<30} | {p.product.name:<30} | {p.review}")
 
 def main() -> None:
     """
@@ -155,8 +124,8 @@ def main() -> None:
         choice = print_menu()
         match choice:
             case 0:
+                save_data([CONN_STR_DB1, CONN_STR_DB2, CONN_STR_DB3],customers, sellers, products, orders, product_review)
                 exit(0) 
-                exit_program() # TODO: implement exiting and saving everything
             case 1:
                 display_all_records()
             case 2:

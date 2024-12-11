@@ -1,5 +1,5 @@
 import psycopg2
-from data_classes import Customer, Seller, Product, Order, ProductReview
+from data_classes import Customer, Seller, Product, Order, ProductReview, State
 
 def print_menu() -> int:
     """
@@ -73,3 +73,124 @@ def get_db_data(conn_strs: list[str]) -> tuple[list[Customer], list[Seller], lis
         conn.close()
     
     return customers, sellers, products, orders, product_reviews
+
+def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Seller], products: list[Product], orders: list[Order], product_reviews: list[ProductReview]) -> None:
+    """
+    Save all data to the databases.
+    """
+
+    for c in customers:
+        # if no changes, skip
+        if c.state == State.UNCHANGED:
+            continue
+        
+        conn = psycopg2.connect(conn_strs[c.origin])
+        cur = conn.cursor()
+
+        # if new customer, insert
+        if c.state == State.NEW:
+            cur.execute("INSERT INTO customers (id, name, email, address, location) VALUES (%s, %s, %s, %s, %s)", (c.id, c.name, c.email, c.address, c.location))
+        
+        # if customer is deleted, delete
+        elif c.state == State.DELETED:
+            cur.execute("DELETE FROM customers WHERE id = %s", (c.id,))
+        
+        # if customer is updated, update
+        elif c.state == State.UPDATED:
+            cur.execute("UPDATE customers SET name = %s, email = %s, address = %s, location = %s WHERE id = %s", (c.name, c.email, c.address, c.location, c.id))
+
+        cur.close()
+        conn.commit()
+
+    for s in sellers:
+        # if no changes, skip
+        if s.state == State.UNCHANGED:
+            continue
+        
+        conn = psycopg2.connect(conn_strs[s.origin])
+        cur = conn.cursor()
+    
+        # if new seller, insert
+        if s.state == State.NEW:
+            cur.execute("INSERT INTO sellers (id, name, email, location) VALUES (%s, %s, %s, %s)", (s.id, s.name, s.email, s.location))
+        
+        # if seller is deleted, delete
+        elif s.state == State.DELETED:
+            cur.execute("DELETE FROM sellers WHERE id = %s", (s.id,))
+        
+        # if seller is updated, update
+        elif s.state == State.UPDATED:
+            cur.execute("UPDATE sellers SET name = %s, email = %s, location = %s WHERE id = %s", (s.name, s.email, s.location, s.id))
+        
+        cur.close()
+        conn.commit()
+
+    for p in products:
+        # if no changes, skip
+        if p.state == State.UNCHANGED:
+            continue
+        
+        conn = psycopg2.connect(conn_strs[p.origin])
+        cur = conn.cursor()
+    
+        # if new product, insert
+        if p.state == State.NEW:
+            cur.execute("INSERT INTO products (id, name, price, seller_id) VALUES (%s, %s, %s, %s)", (p.id, p.name, p.price, p.seller.id))    
+
+        # if product is deleted, delete
+        elif p.state == State.DELETED:
+            cur.execute("DELETE FROM products WHERE id = %s", (p.id,))
+          
+        # if product is updated, update
+        elif p.state == State.UPDATED:
+            cur.execute("UPDATE products SET name = %s, price = %s, seller_id = %s WHERE id = %s", (p.name, p.price, p.seller.id, p.id))
+        
+        cur.close()
+        conn.commit()
+
+    for o in orders:
+
+        if o.state == State.UNCHANGED:
+            continue
+
+        conn = psycopg2.connect(conn_strs[o.origin])
+        cur = conn.cursor()
+
+        # if new order, insert
+        if o.state == State.NEW:
+            cur.execute("INSERT INTO orders (id, product_id, customer_id) VALUES (%s, %s, %s)", (o.id, o.product.id, o.customer.id))
+        
+        elif o.state == State.DELETED:
+            cur.execute("DELETE FROM orders WHERE id = %s", (o.id,))
+
+        # should not be possible to update an order but just in case
+        elif o.state == State.UPDATED:
+            cur.execute("UPDATE orders SET product_id = %s, customer_id = %s WHERE id = %s", (o.product.id, o.customer.id, o.id))
+
+        cur.close()
+        conn.commit()
+
+    for pr in product_reviews:
+
+        if pr.state == State.UNCHANGED:
+            continue
+
+        conn = psycopg2.connect(conn_strs[pr.origin])
+        cur = conn.cursor()
+
+        # if new product review, insert
+        if pr.state == State.NEW:
+            cur.execute("INSERT INTO productreviews (id, product_id, customer_id, review) VALUES (%s, %s, %s, %s)", (pr.id, pr.product.id, pr.customer.id, pr.review))
+        
+        elif pr.state == State.DELETED:
+            cur.execute("DELETE FROM productreviews WHERE id = %s", (pr.id,))
+
+        # should not be possible to update a product review but just in case
+        elif pr.state == State.UPDATED:
+            cur.execute("UPDATE productreviews SET product_id = %s, customer_id = %s, review = %s WHERE id = %s", (pr.product.id, pr.customer.id, pr.review, pr.id))
+
+        cur.close()
+        conn.commit()
+           
+    print("Data saved successfully.")
+    return
