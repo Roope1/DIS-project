@@ -11,6 +11,7 @@ def print_menu() -> int:
     print("1. Display all records from all tables in all databases.")
     print("2. Find the cheapest product across all databases.")
     print("3. Get all products from a database.")
+    print("4. Get reviews by product name")
 
     # Get the user's choice
     choice = input("Enter your choice: ")
@@ -79,118 +80,145 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
     Save all data to the databases.
     """
 
-    for c in customers:
-        # if no changes, skip
-        if c.state == State.UNCHANGED:
-            continue
+    success = True
+
+    try:
+        for c in customers:
+            # if no changes, skip
+            if c.state == State.UNCHANGED:
+                continue
+            
+            conn = psycopg2.connect(conn_strs[c.origin])
+            cur = conn.cursor()
+
+            # if new customer, insert
+            if c.state == State.NEW:
+                cur.execute("INSERT INTO customers (id, name, email, address, location) VALUES (%s, %s, %s, %s, %s)", (c.id, c.name, c.email, c.address, c.location))
+            
+            # if customer is deleted, delete
+            elif c.state == State.DELETED:
+                cur.execute("DELETE FROM customers WHERE id = %s", (c.id,))
+            
+            # if customer is updated, update
+            elif c.state == State.UPDATED:
+                cur.execute("UPDATE customers SET name = %s, email = %s, address = %s, location = %s WHERE id = %s", (c.name, c.email, c.address, c.location, c.id))
+
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save customers")
+        success = False
+
+
+    try:
+        for s in sellers:
+            # if no changes, skip
+            if s.state == State.UNCHANGED:
+                continue
+            
+            conn = psycopg2.connect(conn_strs[s.origin])
+            cur = conn.cursor()
         
-        conn = psycopg2.connect(conn_strs[c.origin])
-        cur = conn.cursor()
+            # if new seller, insert
+            if s.state == State.NEW:
+                cur.execute("INSERT INTO sellers (id, name, email, location) VALUES (%s, %s, %s, %s)", (s.id, s.name, s.email, s.location))
+            
+            # if seller is deleted, delete
+            elif s.state == State.DELETED:
+                cur.execute("DELETE FROM sellers WHERE id = %s", (s.id,))
+            
+            # if seller is updated, update
+            elif s.state == State.UPDATED:
+                cur.execute("UPDATE sellers SET name = %s, email = %s, location = %s WHERE id = %s", (s.name, s.email, s.location, s.id))
+            
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save sellers")
+        success = False
 
-        # if new customer, insert
-        if c.state == State.NEW:
-            cur.execute("INSERT INTO customers (id, name, email, address, location) VALUES (%s, %s, %s, %s, %s)", (c.id, c.name, c.email, c.address, c.location))
+    try:
+        for p in products:
+            # if no changes, skip
+            if p.state == State.UNCHANGED:
+                continue
+            
+            conn = psycopg2.connect(conn_strs[p.origin])
+            cur = conn.cursor()
         
-        # if customer is deleted, delete
-        elif c.state == State.DELETED:
-            cur.execute("DELETE FROM customers WHERE id = %s", (c.id,))
-        
-        # if customer is updated, update
-        elif c.state == State.UPDATED:
-            cur.execute("UPDATE customers SET name = %s, email = %s, address = %s, location = %s WHERE id = %s", (c.name, c.email, c.address, c.location, c.id))
+            # if new product, insert
+            if p.state == State.NEW:
+                cur.execute("INSERT INTO products (id, name, price, seller_id) VALUES (%s, %s, %s, %s)", (p.id, p.name, p.price, p.seller.id))    
 
-        cur.close()
-        conn.commit()
+            # if product is deleted, delete
+            elif p.state == State.DELETED:
+                cur.execute("DELETE FROM products WHERE id = %s", (p.id,))
+            
+            # if product is updated, update
+            elif p.state == State.UPDATED:
+                cur.execute("UPDATE products SET name = %s, price = %s, seller_id = %s WHERE id = %s", (p.name, p.price, p.seller.id, p.id))
+            
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save products")
+        success = False
 
-    for s in sellers:
-        # if no changes, skip
-        if s.state == State.UNCHANGED:
-            continue
-        
-        conn = psycopg2.connect(conn_strs[s.origin])
-        cur = conn.cursor()
-    
-        # if new seller, insert
-        if s.state == State.NEW:
-            cur.execute("INSERT INTO sellers (id, name, email, location) VALUES (%s, %s, %s, %s)", (s.id, s.name, s.email, s.location))
-        
-        # if seller is deleted, delete
-        elif s.state == State.DELETED:
-            cur.execute("DELETE FROM sellers WHERE id = %s", (s.id,))
-        
-        # if seller is updated, update
-        elif s.state == State.UPDATED:
-            cur.execute("UPDATE sellers SET name = %s, email = %s, location = %s WHERE id = %s", (s.name, s.email, s.location, s.id))
-        
-        cur.close()
-        conn.commit()
+    try: 
+        for o in orders:
 
-    for p in products:
-        # if no changes, skip
-        if p.state == State.UNCHANGED:
-            continue
-        
-        conn = psycopg2.connect(conn_strs[p.origin])
-        cur = conn.cursor()
-    
-        # if new product, insert
-        if p.state == State.NEW:
-            cur.execute("INSERT INTO products (id, name, price, seller_id) VALUES (%s, %s, %s, %s)", (p.id, p.name, p.price, p.seller.id))    
+            if o.state == State.UNCHANGED:
+                continue
 
-        # if product is deleted, delete
-        elif p.state == State.DELETED:
-            cur.execute("DELETE FROM products WHERE id = %s", (p.id,))
-          
-        # if product is updated, update
-        elif p.state == State.UPDATED:
-            cur.execute("UPDATE products SET name = %s, price = %s, seller_id = %s WHERE id = %s", (p.name, p.price, p.seller.id, p.id))
-        
-        cur.close()
-        conn.commit()
+            conn = psycopg2.connect(conn_strs[o.origin])
+            cur = conn.cursor()
 
-    for o in orders:
+            # if new order, insert
+            if o.state == State.NEW:
+                cur.execute("INSERT INTO orders (id, product_id, customer_id) VALUES (%s, %s, %s)", (o.id, o.product.id, o.customer.id))
+            
+            elif o.state == State.DELETED:
+                cur.execute("DELETE FROM orders WHERE id = %s", (o.id,))
 
-        if o.state == State.UNCHANGED:
-            continue
+            # should not be possible to update an order but just in case
+            elif o.state == State.UPDATED:
+                cur.execute("UPDATE orders SET product_id = %s, customer_id = %s WHERE id = %s", (o.product.id, o.customer.id, o.id))
 
-        conn = psycopg2.connect(conn_strs[o.origin])
-        cur = conn.cursor()
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save orders")
+        success = False
 
-        # if new order, insert
-        if o.state == State.NEW:
-            cur.execute("INSERT INTO orders (id, product_id, customer_id) VALUES (%s, %s, %s)", (o.id, o.product.id, o.customer.id))
-        
-        elif o.state == State.DELETED:
-            cur.execute("DELETE FROM orders WHERE id = %s", (o.id,))
+    try:
+        for pr in product_reviews:
 
-        # should not be possible to update an order but just in case
-        elif o.state == State.UPDATED:
-            cur.execute("UPDATE orders SET product_id = %s, customer_id = %s WHERE id = %s", (o.product.id, o.customer.id, o.id))
+            if pr.state == State.UNCHANGED:
+                continue
 
-        cur.close()
-        conn.commit()
+            conn = psycopg2.connect(conn_strs[pr.origin])
+            cur = conn.cursor()
 
-    for pr in product_reviews:
+            # if new product review, insert
+            if pr.state == State.NEW:
+                cur.execute("INSERT INTO productreviews (id, product_id, customer_id, review) VALUES (%s, %s, %s, %s)", (pr.id, pr.product.id, pr.customer.id, pr.review))
+            
+            elif pr.state == State.DELETED:
+                cur.execute("DELETE FROM productreviews WHERE id = %s", (pr.id,))
 
-        if pr.state == State.UNCHANGED:
-            continue
+            # should not be possible to update a product review but just in case
+            elif pr.state == State.UPDATED:
+                cur.execute("UPDATE productreviews SET product_id = %s, customer_id = %s, review = %s WHERE id = %s", (pr.product.id, pr.customer.id, pr.review, pr.id))
 
-        conn = psycopg2.connect(conn_strs[pr.origin])
-        cur = conn.cursor()
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save product reviews")
+        success = False
 
-        # if new product review, insert
-        if pr.state == State.NEW:
-            cur.execute("INSERT INTO productreviews (id, product_id, customer_id, review) VALUES (%s, %s, %s, %s)", (pr.id, pr.product.id, pr.customer.id, pr.review))
-        
-        elif pr.state == State.DELETED:
-            cur.execute("DELETE FROM productreviews WHERE id = %s", (pr.id,))
+    if success:
+        print("Data saved successfully.")
+    else: 
+        print("Could not save data.")
 
-        # should not be possible to update a product review but just in case
-        elif pr.state == State.UPDATED:
-            cur.execute("UPDATE productreviews SET product_id = %s, customer_id = %s, review = %s WHERE id = %s", (pr.product.id, pr.customer.id, pr.review, pr.id))
-
-        cur.close()
-        conn.commit()
-           
-    print("Data saved successfully.")
     return
