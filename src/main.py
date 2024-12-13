@@ -3,6 +3,7 @@ from utils import print_menu, get_db_data, save_data
 from data_classes import Customer, Seller, Product, Order, ProductReview, State
 from searches import get_products, get_reviews_by_product, get_5_cheapest_products
 from inserts import create_order
+from edits import edit_product_price
 
 # These are used to connect to the databases
 CONN_STR_DB1 = "postgresql://postgres:password@127.0.0.1:8432/postgres"
@@ -139,6 +140,8 @@ def main() -> None:
                 orders.append(create_order([CONN_STR_DB1, CONN_STR_DB2, CONN_STR_DB3],customers, products, orders))
             case 6:
                 get_5_cheapest_products(products)
+            case 7:
+                edit_product_price(products)
             case _:
                 print("Invalid choice.")
                 continue            
