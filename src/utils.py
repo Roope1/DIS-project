@@ -12,6 +12,7 @@ def print_menu() -> int:
     print("2. Find the cheapest product across all databases.")
     print("3. Get all products from a database.")
     print("4. Get reviews by product name")
+    print("5. Create a new order")
 
     # Get the user's choice
     choice = input("Enter your choice: ")
