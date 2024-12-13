@@ -33,3 +33,14 @@ def get_reviews_by_product(product_review: list[ProductReview]) -> None:
     print("-" * 90)
     for p in prod:
         print(f"{p.customer.name:<30} | {p.product.name:<30} | {p.review}")
+    
+def get_5_cheapest_products(products: list[Product]) -> None:
+    """
+    Get 5 cheapest products from the list of products and prints them.
+    """
+    cheapest = sorted([p for p in products if p.state != State.DELETED], key=lambda x: x.price)[:5]
+    print("\n{:<3} | {:<30} | {:>10} | {:<30}".format("","Product Name", "Price", "Database"))
+    print("-" * 73)
+
+    for i, p in enumerate(cheapest):
+        print(f"{i+1:<3} | {p.name:<30} | {p.price:>9}€ | {p.origin + 1:<3}")

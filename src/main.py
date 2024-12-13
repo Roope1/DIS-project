@@ -1,7 +1,7 @@
 import psycopg2
 from utils import print_menu, get_db_data, save_data
 from data_classes import Customer, Seller, Product, Order, ProductReview, State
-from searches import get_products, get_reviews_by_product
+from searches import get_products, get_reviews_by_product, get_5_cheapest_products
 from inserts import create_order
 
 # These are used to connect to the databases
@@ -137,6 +137,8 @@ def main() -> None:
                 get_reviews_by_product(product_review)
             case 5:
                 orders.append(create_order([CONN_STR_DB1, CONN_STR_DB2, CONN_STR_DB3],customers, products, orders))
+            case 6:
+                get_5_cheapest_products(products)
             case _:
                 print("Invalid choice.")
                 continue            
