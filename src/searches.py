@@ -1,4 +1,7 @@
-def get_products() -> None:
+from data_classes import Customer, Seller, Product, Order, ProductReview, State
+
+
+def get_products(products: list[Product]) -> None:
     """
     Allows user to select a database and displays all products from that database.
     """
@@ -13,7 +16,7 @@ def get_products() -> None:
     for p in prod:
         print(f"{p.name:<30} | {p.price:>9}€ | {p.seller.name:<30}")
     
-def get_reviews_by_product() -> None:
+def get_reviews_by_product(product_review: list[ProductReview]) -> None:
     """
     Allows user to select a product by name and displays all reviews for that product.
     """
