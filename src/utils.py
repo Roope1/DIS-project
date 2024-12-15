@@ -84,8 +84,33 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
     """
     Save all data to the databases.
     """
-
     success = True
+
+    try:
+        for pr in product_reviews:
+
+            if pr.state == State.UNCHANGED:
+                continue
+
+            conn = psycopg2.connect(conn_strs[pr.origin])
+            cur = conn.cursor()
+
+            # if new product review, insert
+            if pr.state == State.NEW:
+                cur.execute("INSERT INTO productreviews (id, product_id, customer_id, review) VALUES (%s, %s, %s, %s)", (pr.id, pr.product.id, pr.customer.id, pr.review))
+            
+            elif pr.state == State.DELETED:
+                cur.execute("DELETE FROM productreviews WHERE id = %s", (pr.id,))
+
+            # should not be possible to update a product review but just in case
+            elif pr.state == State.UPDATED:
+                cur.execute("UPDATE productreviews SET product_id = %s, customer_id = %s, review = %s WHERE id = %s", (pr.product.id, pr.customer.id, pr.review, pr.id))
+
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save product reviews")
+        success = False
 
     try:
         for c in customers:
@@ -166,7 +191,7 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
             cur.close()
             conn.commit()
     except Exception as e:
-        print(f"Could not save products")
+        print(f"Could not save products", e)
         success = False
 
     try: 
@@ -193,32 +218,6 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
             conn.commit()
     except Exception as e:
         print(f"Could not save orders")
-        success = False
-
-    try:
-        for pr in product_reviews:
-
-            if pr.state == State.UNCHANGED:
-                continue
-
-            conn = psycopg2.connect(conn_strs[pr.origin])
-            cur = conn.cursor()
-
-            # if new product review, insert
-            if pr.state == State.NEW:
-                cur.execute("INSERT INTO productreviews (id, product_id, customer_id, review) VALUES (%s, %s, %s, %s)", (pr.id, pr.product.id, pr.customer.id, pr.review))
-            
-            elif pr.state == State.DELETED:
-                cur.execute("DELETE FROM productreviews WHERE id = %s", (pr.id,))
-
-            # should not be possible to update a product review but just in case
-            elif pr.state == State.UPDATED:
-                cur.execute("UPDATE productreviews SET product_id = %s, customer_id = %s, review = %s WHERE id = %s", (pr.product.id, pr.customer.id, pr.review, pr.id))
-
-            cur.close()
-            conn.commit()
-    except Exception as e:
-        print(f"Could not save product reviews")
         success = False
 
     if success:

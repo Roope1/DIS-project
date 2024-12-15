@@ -18,18 +18,11 @@ def get_products(products: list[Product]) -> None:
     
 def get_reviews_by_product(product_review: list[ProductReview]) -> None:
     """
-    Allows user to select a product by name and displays all reviews for that product.
+    Allows user to select a product by name and displays all reviews for that product across all databases.
     """
-    db_selection = input("Enter database you want to search in (1, 2, or 3): ")
-    if db_selection not in ["1", "2", "3"]:
-        print("Invalid database number.")
-        return
-    
     product_name = input("Enter the product name: ")
-    for x in product_review:
-        print(f"Origin: {x.origin}, Product Name: {x.product.name}, Product Origin: {x.product.origin}")
 
-    prod = [x for x in product_review if x.origin == (int(db_selection) - 1) and x.state != State.DELETED and x.product.name.lower().strip() == product_name.lower().strip() and x.origin == x.product.origin]
+    prod = [x for x in product_review if x.state != State.DELETED and x.product.name.lower().strip() == product_name.lower().strip()]
 
     print("\n{:<30} | {:<30} | {:<30}".format("Customer Name", "Product Name", "Review"))
     print("-" * 90)
