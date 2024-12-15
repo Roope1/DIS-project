@@ -2,7 +2,7 @@ import psycopg2
 from utils import print_menu, get_db_data, save_data
 from data_classes import Customer, Seller, Product, Order, ProductReview, State
 from searches import get_products, get_reviews_by_product, get_5_cheapest_products
-from inserts import create_order
+from inserts import create_order, create_customer, create_seller, create_product
 from edits import edit_product_price
 
 # These are used to connect to the databases
@@ -142,6 +142,12 @@ def main() -> None:
                 get_5_cheapest_products(products)
             case 7:
                 edit_product_price(products)
+            case 8:
+                customers.append(create_customer(customers))   
+            case 9:
+                sellers.append(create_seller(sellers))
+            case 10:
+                products.append(create_product(products, sellers))
             case _:
                 print("Invalid choice.")
                 continue            

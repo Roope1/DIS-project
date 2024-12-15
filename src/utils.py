@@ -14,6 +14,9 @@ def print_menu() -> int:
     print("5. Create a new order")
     print("6. Get 5 cheapest products")
     print("7. Edit product price")
+    print("8. Create a new customer")
+    print("9. Create a new seller")
+    print("10. Create a new product")
     print("0. Exit the program.")
 
     # Get the user's choice
