@@ -7,6 +7,9 @@ def new_id(x: list()) -> int:
     return max([i.id for i in x]) + 1
 
 def create_order(customers: list[Customer], products: list[Product], orders: list[Order]) -> Order:
+    """ 
+    Creates a new order and returns an Order object
+    """
     # db selection
     db = input("Which database do you want to order from? (1, 2 or 3)")
 

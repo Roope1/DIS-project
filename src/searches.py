@@ -41,6 +41,7 @@ def get_5_cheapest_products(products: list[Product]) -> None:
     Get 5 cheapest products from the list of products and prints them.
     """
     cheapest = sorted([p for p in products if p.state != State.DELETED], key=lambda x: x.price)[:5]
+    print("The 5 cheapest products across all databases are:")
     print("\n{:<3} | {:<30} | {:>10} | {:<30}".format("","Product Name", "Price", "Database"))
     print("-" * 73)
 

@@ -7,16 +7,14 @@ def print_menu() -> int:
     """
     # Display the menu options
     print("\nSelect an option:")
-    print("1. Display all records from all tables in all databases.")
-    print("2. Find the cheapest product across all databases.")
-    print("3. Get all products from a database.")
-    print("4. Get reviews by product name")
-    print("5. Create a new order")
-    print("6. Get 5 cheapest products")
-    print("7. Edit product price")
-    print("8. Create a new customer")
-    print("9. Create a new seller")
-    print("10. Create a new product")
+    print("1. Get 5 cheapest products")
+    print("2. Get all products from a database.")
+    print("3. Get reviews by product name")
+    print("4. Create a new order")
+    print("5. Edit product price")
+    print("6. Create a new customer")
+    print("7. Create a new seller")
+    print("8. Create a new product")
     print("0. Exit the program.")
 
     # Get the user's choice
