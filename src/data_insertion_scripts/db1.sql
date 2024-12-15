@@ -141,14 +141,3 @@ VALUES
     (19, 19, 'The robotic vacuum does its job well, but it gets stuck under furniture sometimes.'),
     (20, 20, 'Electric toothbrush is effective, and my teeth feel cleaner after each use.');
 
-
-ALTER TABLE productreviews ADD COLUMN origin INT;
-ALTER TABLE products ADD COLUMN origin INT;
-
-UPDATE productreviews 
-SET origin = 1 
-WHERE product_id BETWEEN 1 AND 20;
-
-UPDATE products 
-SET origin = 1
-WHERE id BETWEEN 1 AND 20;

@@ -140,15 +140,3 @@ VALUES
     (18, 18, 'Compact USB drive with plenty of storage.'),
     (19, 19, 'Solid stand, holds my tablet securely at a good angle.'),
     (20, 20, 'Amazing noise cancellation and great sound clarity.');
-
-ALTER TABLE productreviews ADD COLUMN origin INT;
-ALTER TABLE products ADD COLUMN origin INT;
-
-UPDATE productreviews 
-SET origin = 3 
-WHERE product_id BETWEEN 1 AND 20;
-
-
-UPDATE products 
-SET origin = 3
-WHERE id BETWEEN 1 AND 20;

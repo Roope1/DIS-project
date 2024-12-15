@@ -143,17 +143,5 @@ VALUES
     (19, 19, 'Tracks fitness metrics accurately, very durable.'),
     (20, 20, 'Perfect mini projector for movies, great value.');
 
-ALTER TABLE productreviews ADD COLUMN origin INT;
-ALTER TABLE products ADD COLUMN origin INT;
-
-UPDATE productreviews 
-SET origin = 2
-WHERE product_id BETWEEN 1 AND 20;
-
-UPDATE products 
-SET origin = 2
-WHERE id BETWEEN 1 AND 20;
-
-
 
 
