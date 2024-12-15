@@ -4,6 +4,7 @@ from data_classes import Customer, Seller, Product, Order, ProductReview, State
 from searches import get_products, get_reviews_by_product, get_5_cheapest_products
 from inserts import create_order, create_customer, create_seller, create_product
 from edits import edit_product_price
+from deletes import delete_product
 
 # These are used to connect to the databases
 CONN_STR_DB1 = "postgresql://postgres:password@127.0.0.1:8432/postgres"
@@ -40,6 +41,8 @@ def main() -> None:
                 sellers.append(create_seller(sellers))
             case 8:
                 products.append(create_product(products, sellers))
+            case 9:
+                delete_product(products)
             case _:
                 print("Invalid choice.")
                 continue            
