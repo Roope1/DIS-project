@@ -118,8 +118,8 @@ VALUES
 -- Inserting 10 dummy data items
 INSERT INTO productreviews (product_id, customer_id, review)
 VALUES 
-    (1, 1, 'Excellent gaming performance and great display.'),
-    (2, 2, 'Amazing picture quality, worth the price!'),
+    (1, 1, 'Amazing gaming laptop with top-notch performance.'),
+    (2, 2, 'Great picture quality, but the sound could be better.'),
     (3, 3, 'The headphones block out sound perfectly, love it.'),
     (4, 4, 'Perfect fitness companion, helps track my workouts!'),
     (5, 5, 'Good camera for everyday use, not ideal for professional shoots.'),
@@ -132,17 +132,27 @@ VALUES
 -- Inserting 10 new dummy data items into the productreviews table
 INSERT INTO productreviews (product_id, customer_id, review)
 VALUES 
-    (11, 11, 'This gaming laptop has incredible performance and speed!'),
-    (12, 12, 'The 4K TV offers an amazing visual experience, highly recommended.'),
-    (13, 13, 'The noise-canceling headphones work great, perfect for travel.'),
-    (14, 14, 'The fitness tracker is very helpful for tracking workouts and steps.'),
-    (15, 15, 'This digital camera takes decent photos, good for casual use.'),
-    (16, 16, 'The smartphone case is durable and fits perfectly, but a bit bulky.'),
-    (17, 17, 'Bluetooth headphones provide good sound, but the battery life could be better.'),
-    (18, 18, 'The wristwatch is stylish and comfortable, a great accessory for daily wear.'),
-    (19, 19, 'The laptop stand is adjustable and sturdy, very useful for my desk setup.'),
-    (20, 20, 'The wireless mouse is super responsive and comfortable for long use.');
+    (11, 11, 'Crisp display and vibrant colors, perfect for work and gaming.'),
+    (12, 12, 'Keeps my home temperature perfect, easy to use.'),
+    (13, 13, 'Great sound quality for the price, compact design.'),
+    (14, 14, 'Charges my devices quickly, portable and handy.'),
+    (15, 15, 'Excellent cleaning performance and battery life.'),
+    (16, 16, 'Simple yet sturdy stand for my smartphone.'),
+    (17, 17, 'Cleans the air efficiently, noticeable improvement.'),
+    (18, 18, 'Accurate and fast temperature readings.'),
+    (19, 19, 'Tracks fitness metrics accurately, very durable.'),
+    (20, 20, 'Perfect mini projector for movies, great value.');
 
+ALTER TABLE productreviews ADD COLUMN origin INT;
+ALTER TABLE products ADD COLUMN origin INT;
+
+UPDATE productreviews 
+SET origin = 2
+WHERE product_id BETWEEN 1 AND 20;
+
+UPDATE products 
+SET origin = 2
+WHERE id BETWEEN 1 AND 20;
 
 
 

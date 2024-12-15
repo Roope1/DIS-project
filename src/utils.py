@@ -59,19 +59,19 @@ def get_db_data(conn_strs: list[str]) -> tuple[list[Customer], list[Seller], lis
         cur.execute("SELECT * FROM products")
         res = cur.fetchall()
         for r in res: 
-            products.append(Product(r[0], r[1], r[2], [s for s in sellers if s.id == r[3]][0], origin))
+            products.append(Product(r[0], r[1], r[2], [s for s in sellers if s.id == r[3] and s.origin == origin][0], origin=origin))
         
         # get all orders
         cur.execute("SELECT * FROM orders")
         res = cur.fetchall()
         for r in res:
-            orders.append(Order(r[0], [p for p in products if p.id == r[1]][0], [c for c in customers if c.id == r[2]][0], origin))
+            orders.append(Order(r[0], [p for p in products if p.id == r[1] and p.origin == origin][0], [c for c in customers if c.id == r[2] and c.origin == origin][0], origin=origin))
         
         # get all product reviews
         cur.execute("SELECT * FROM ProductReviews")
         res = cur.fetchall()
         for r in res:
-            product_reviews.append(ProductReview(r[0], [p for p in products if p.id == r[1]][0], [c for c in customers if c.id == r[2]][0], r[3], origin))
+            product_reviews.append(ProductReview(r[0], [p for p in products if p.id == r[1] and p.origin == origin][0], [c for c in customers if c.id == r[2] and c.origin == origin][0], r[3], origin=origin))
         
         cur.close()
         conn.close()

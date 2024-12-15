@@ -6,7 +6,7 @@ def new_id(x: list()) -> int:
     """
     return max([i.id for i in x]) + 1
 
-def create_order(conn_strs: list[str], customers: list[Customer], products: list[Product], orders: list[Order]) -> Order:
+def create_order(customers: list[Customer], products: list[Product], orders: list[Order]) -> Order:
     # db selection
     db = input("Which database do you want to order from? (1, 2 or 3)")
 

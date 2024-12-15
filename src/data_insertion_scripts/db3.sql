@@ -130,16 +130,25 @@ VALUES
 -- Inserting 10 new dummy data items into the productreviews table
 INSERT INTO productreviews (product_id, customer_id, review)
 VALUES 
-    (11, 11, 'Comfortable and great sound for long listening sessions.'),
-    (12, 12, 'Great stand, holds my phone at the perfect angle.'),
-    (13, 13, 'Immersive gaming experience with a high refresh rate.'),
-    (14, 14, 'Helps me track my workouts and progress easily.'),
-    (15, 15, 'Clear and crisp sound, perfect for parties.'),
-    (16, 16, 'Affordable and reliable, great for charging my devices.'),
-    (17, 17, 'Perfect fit and offers great protection for my laptop.'),
-    (18, 18, 'Elegant design and very durable, highly recommend.'),
-    (19, 19, 'Good video quality, ideal for online meetings.'),
-    (20, 20, 'Small but powerful, perfect for travel and outdoor activities.');
+    (11, 11, 'Bright and adjustable LED lamp, perfect for my desk.'),
+    (12, 12, 'Great power bank, charges my phone multiple times.'),
+    (13, 13, 'Keeps my laptop cool during long gaming sessions.'),
+    (14, 14, 'Smooth and responsive mouse, very ergonomic.'),
+    (15, 15, 'Spacious external drive, fast data transfer speeds.'),
+    (16, 16, 'Good quality screen protector, easy to apply.'),
+    (17, 17, 'Charges quickly and works perfectly for my devices.'),
+    (18, 18, 'Compact USB drive with plenty of storage.'),
+    (19, 19, 'Solid stand, holds my tablet securely at a good angle.'),
+    (20, 20, 'Amazing noise cancellation and great sound clarity.');
+
+ALTER TABLE productreviews ADD COLUMN origin INT;
+ALTER TABLE products ADD COLUMN origin INT;
+
+UPDATE productreviews 
+SET origin = 3 
+WHERE product_id BETWEEN 1 AND 20;
 
 
-
+UPDATE products 
+SET origin = 3
+WHERE id BETWEEN 1 AND 20;

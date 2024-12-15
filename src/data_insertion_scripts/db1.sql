@@ -130,14 +130,25 @@ VALUES
 -- Inserting 10 additional dummy data items into the productreviews table
 INSERT INTO productreviews (product_id, customer_id, review)
 VALUES 
-    (1, 11, 'This gaming PC is awesome! Very fast and handles all my games smoothly.'),
-    (2, 12, 'The wireless earbuds are good, but the bass could be better.'),
-    (3, 13, 'Great action camera! The video quality is stunning for the price.'),
-    (4, 14, 'The Bluetooth headset is comfy, but the range is a bit short.'),
-    (5, 15, 'External SSD is fast and reliable. A great purchase for storage.'),
-    (6, 16, '4K TV looks fantastic, great picture quality and sound.'),
-    (7, 17, 'E-Book reader is lightweight and easy to read for hours.'),
-    (8, 18, 'Smart home hub works perfectly with all my devices.'),
-    (9, 19, 'The robotic vacuum does its job well, but it gets stuck under furniture sometimes.'),
-    (10, 20, 'Electric toothbrush is effective, and my teeth feel cleaner after each use.');
+    (11, 11, 'This gaming PC is awesome! Very fast and handles all my games smoothly.'),
+    (12, 12, 'The wireless earbuds are good, but the bass could be better.'),
+    (13, 13, 'Great action camera! The video quality is stunning for the price.'),
+    (14, 14, 'The Bluetooth headset is comfy, but the range is a bit short.'),
+    (15, 15, 'External SSD is fast and reliable. A great purchase for storage.'),
+    (16, 16, '4K TV looks fantastic, great picture quality and sound.'),
+    (17, 17, 'E-Book reader is lightweight and easy to read for hours.'),
+    (18, 18, 'Smart home hub works perfectly with all my devices.'),
+    (19, 19, 'The robotic vacuum does its job well, but it gets stuck under furniture sometimes.'),
+    (20, 20, 'Electric toothbrush is effective, and my teeth feel cleaner after each use.');
 
+
+ALTER TABLE productreviews ADD COLUMN origin INT;
+ALTER TABLE products ADD COLUMN origin INT;
+
+UPDATE productreviews 
+SET origin = 1 
+WHERE product_id BETWEEN 1 AND 20;
+
+UPDATE products 
+SET origin = 1
+WHERE id BETWEEN 1 AND 20;

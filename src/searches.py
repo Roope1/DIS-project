@@ -26,8 +26,10 @@ def get_reviews_by_product(product_review: list[ProductReview]) -> None:
         return
     
     product_name = input("Enter the product name: ")
-    
-    prod = [x for x in product_review if x.origin == (int(db_selection) - 1) and x.state != State.DELETED and x.product.name.lower() == product_name.lower()]
+    for x in product_review:
+        print(f"Origin: {x.origin}, Product Name: {x.product.name}, Product Origin: {x.product.origin}")
+
+    prod = [x for x in product_review if x.origin == (int(db_selection) - 1) and x.state != State.DELETED and x.product.name.lower().strip() == product_name.lower().strip() and x.origin == x.product.origin]
 
     print("\n{:<30} | {:<30} | {:<30}".format("Customer Name", "Product Name", "Review"))
     print("-" * 90)
