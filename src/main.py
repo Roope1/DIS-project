@@ -42,7 +42,7 @@ def main() -> None:
             case 8:
                 products.append(create_product(products, sellers))
             case 9:
-                delete_product(products, product_review)
+                delete_product(products, product_review, orders)
             case _:
                 print("Invalid choice.")
                 continue            

@@ -11,7 +11,7 @@ def create_order(customers: list[Customer], products: list[Product], orders: lis
     Creates a new order and returns an Order object
     """
     # db selection
-    db = input("Which database do you want to order from? (1, 2 or 3)")
+    db = input("Which database do you want to order from? (1, 2 or 3): ")
 
     # check if db is valid
     if db not in ["1", "2", "3"]:

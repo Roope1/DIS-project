@@ -112,6 +112,32 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
         print(f"Could not save product reviews")
         success = False
 
+    try: 
+        for o in orders:
+
+            if o.state == State.UNCHANGED:
+                continue
+
+            conn = psycopg2.connect(conn_strs[o.origin])
+            cur = conn.cursor()
+
+            # if new order, insert
+            if o.state == State.NEW:
+                cur.execute("INSERT INTO orders (id, product_id, customer_id) VALUES (%s, %s, %s)", (o.id, o.product.id, o.customer.id))
+            
+            elif o.state == State.DELETED:
+                cur.execute("DELETE FROM orders WHERE id = %s", (o.id,))
+
+            # should not be possible to update an order but just in case
+            elif o.state == State.UPDATED:
+                cur.execute("UPDATE orders SET product_id = %s, customer_id = %s WHERE id = %s", (o.product.id, o.customer.id, o.id))
+
+            cur.close()
+            conn.commit()
+    except Exception as e:
+        print(f"Could not save orders", e)
+        success = False
+
     try:
         for c in customers:
             # if no changes, skip
@@ -136,7 +162,7 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
             cur.close()
             conn.commit()
     except Exception as e:
-        print(f"Could not save customers")
+        print(f"Could not save customers", e)
         success = False
 
 
@@ -164,7 +190,7 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
             cur.close()
             conn.commit()
     except Exception as e:
-        print(f"Could not save sellers")
+        print(f"Could not save sellers", e)
         success = False
 
     try:
@@ -194,31 +220,6 @@ def save_data(conn_strs: list[str] ,customers: list[Customer], sellers: list[Sel
         print(f"Could not save products", e)
         success = False
 
-    try: 
-        for o in orders:
-
-            if o.state == State.UNCHANGED:
-                continue
-
-            conn = psycopg2.connect(conn_strs[o.origin])
-            cur = conn.cursor()
-
-            # if new order, insert
-            if o.state == State.NEW:
-                cur.execute("INSERT INTO orders (id, product_id, customer_id) VALUES (%s, %s, %s)", (o.id, o.product.id, o.customer.id))
-            
-            elif o.state == State.DELETED:
-                cur.execute("DELETE FROM orders WHERE id = %s", (o.id,))
-
-            # should not be possible to update an order but just in case
-            elif o.state == State.UPDATED:
-                cur.execute("UPDATE orders SET product_id = %s, customer_id = %s WHERE id = %s", (o.product.id, o.customer.id, o.id))
-
-            cur.close()
-            conn.commit()
-    except Exception as e:
-        print(f"Could not save orders")
-        success = False
 
     if success:
         print("Data saved successfully.")

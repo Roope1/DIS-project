@@ -1,6 +1,6 @@
-from data_classes import Product, ProductReview, State
+from data_classes import Product, ProductReview, Order, State
 
-def delete_product(products: list[Product], product_reviews: list[ProductReview]) -> None:
+def delete_product(products: list[Product], product_reviews: list[ProductReview], orders: list[Order]) -> None:
     """
     Allows the user to delete a product.
     """
@@ -21,7 +21,11 @@ def delete_product(products: list[Product], product_reviews: list[ProductReview]
     for pr in product_reviews:
         if pr.product == product and pr.origin == product.origin:
             pr.state = State.DELETED
-
+        
+    # delete all orders for the product
+    for o in orders:
+        if o.product == product and o.origin == product.origin:
+            o.state = State.DELETED
 
     print("Product deleted.")
     
